@@ -35,6 +35,7 @@ brew "mtr"
 brew "pinentry-mac"
 brew "php70", args: ["with-gmp", "with-pear", "with-phpdbg", "without-fpm"]
 brew "php70-intl"
+brew "ruby"
 brew "shellcheck"
 brew "siege"
 brew "sift"
