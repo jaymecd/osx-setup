@@ -30,6 +30,7 @@ brew "jq"
 brew "kubernetes-cli"
 brew "mas"
 brew "youtube-dl"
+brew "mc"
 brew "mpv", args: ["with-bundle", "with-libbluray", "with-libcaca", "with-libdvdnav", "with-libdvdread"]
 brew "mtr"
 brew "pinentry-mac"
