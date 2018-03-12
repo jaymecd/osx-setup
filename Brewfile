@@ -6,10 +6,12 @@ tap "homebrew/core"
 tap "homebrew/homebrew-php"
 tap "mapbox/cli"
 tap "pothosware/pothos"
+tap "wallix/awless"
 
 # is required for java-based brews, like ant
 cask "java"
 
+brew "awless"
 brew "awscli"
 brew "bash"
 brew "bash-completion"
