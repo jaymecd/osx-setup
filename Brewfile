@@ -11,6 +11,7 @@ tap "pothosware/pothos"
 cask "java"
 
 brew "awscli"
+brew "bash"
 brew "bash-completion"
 brew "colordiff"
 brew "coreutils"
