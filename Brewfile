@@ -13,6 +13,7 @@ cask "java"
 
 brew "awless"
 brew "awscli"
+brew "azure-cli"
 brew "bash"
 brew "bash-completion"
 brew "colordiff"
