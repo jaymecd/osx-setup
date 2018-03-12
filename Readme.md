@@ -9,22 +9,38 @@ Set of commands to orchestrate OSX machine.
 To display help:
 
 ```shell
-$ make
-$ make help
+$ make [help]
+
+Usage:
+  make <target>
+
+Targets:
+  check      Check for updates
+  clean      Remove unattended applications
+  doctor     Run systems checks
+  help       Display this help
+  info       List installed apps
+  init       Setup system
+  sync       Install/update applications
 ```
 
-To verify setup:
+To init/update system it's enough to run:
 
 ```shell
-$ make deps doctor
+$ make init
 ```
 
-To install/update applications:
+This will install `brew`/`mas` if absent, copy Shell ang GnuPG config files.
 
 ```shell
-$ git pull --rebase
+$ git pull
 $ make sync
 ```
+
+## TODO
+
+- [ ] doc for git setup with gpg
+- [ ] system setings tuning
 
 ## Under the hood
 
@@ -36,21 +52,23 @@ $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/maste
 
 ### Install Mac App Store CLI
 
+⚠️  `mas signin` is broken, please follow https://github.com/mas-cli/mas/issues/107 for more information. 
+
 ```shell
 $ brew install mas
-$ mas signin YOUR@EMAIL.COM
+$ ./mas-signin.sh
 ```
 
 ### Install apps
 
 ```shell
-$ brew bundle -v
+$ brew bundle
 ```
 
 ### Check apps
 
 ```shell
-$ brew bundle check -v
+$ brew bundle check
 ```
 
 ### Cleanup apps

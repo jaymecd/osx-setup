@@ -39,6 +39,7 @@ brew "mtr"
 brew "packer"
 brew "php72", args: ["with-gmp", "with-pear", "with-phpdbg", "without-fpm"]
 brew "pinentry-mac"
+brew "rsync"
 brew "ruby"
 brew "shellcheck"
 brew "siege"
