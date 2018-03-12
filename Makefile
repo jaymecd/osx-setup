@@ -46,7 +46,7 @@ doctor:
 
 ## Install/update applications
 sync:
-	@ brew bundle -v
+	@ brew bundle
 	@ brew bundle cleanup
 	@ brew bundle dump --describe --global --force
 	@ echo "🍺  Configuration is dumped to $(HOME)/.Brewfile"
