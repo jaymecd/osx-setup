@@ -1,0 +1,12 @@
+mkdir -p ~/.mfa
+
+complete -W "$(ls -1 ~/.mfa/*  | awk -F "/" '{print $NF}')" mfa pbmfa
+
+mfa () {
+  test -f ~/.mfa/$1
+  oathtool --base32 --totp "$(cat ~/.mfa/$1)"
+}
+
+pbmfa () {
+  mfa "$1" | pbcopy
+}

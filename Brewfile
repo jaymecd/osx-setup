@@ -39,6 +39,7 @@ brew "mas"
 brew "mc"
 brew "mpv", args: ["with-bundle", "with-libbluray", "with-libcaca", "with-libdvdnav", "with-libdvdread"]
 brew "mtr"
+brew "oath-toolkit"
 brew "packer"
 brew "php72", args: ["with-gmp", "with-pear", "with-phpdbg", "without-fpm"]
 brew "pinentry-mac"
