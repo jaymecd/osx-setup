@@ -1,12 +1,11 @@
 mkdir -p ~/.mfa
 
-complete -W "$(ls -1 ~/.mfa/*  | awk -F "/" '{print $NF}')" mfa pbmfa
+complete -W "$(ls -1 ~/.mfa/*  | awk -F "/" '{print $NF}')" mfa mfa_token
 
-mfa () {
-  test -f ~/.mfa/$1
-  oathtool --base32 --totp "$(cat ~/.mfa/$1)"
+function mfa () {
+    mfa_token "$1" | pbcopy
 }
 
-pbmfa () {
-  mfa "$1" | pbcopy
+function mfa_token () {
+    oathtool --base32 --totp "$(cat ~/.mfa/$1)"
 }
