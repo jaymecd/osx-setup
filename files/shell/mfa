@@ -1,11 +1,19 @@
 mkdir -p ~/.mfa
 
-complete -W "$(ls -1 ~/.mfa/*  | awk -F "/" '{print $NF}')" mfa mfa_token
+_mfa_tokens () {
+    local curr profiles
+    curr="${COMP_WORDS[COMP_CWORD]}"
+    profiles="$(ls -1 "${HOME}/.mfa/"*  | awk -F "/" '{print $NF}')"
 
-function mfa () {
-    mfa_token "$1" | pbcopy
+    COMPREPLY=( $(compgen -W "${profiles}" -- "${curr}") )
 }
 
-function mfa_token () {
-    oathtool --base32 --totp "$(cat ~/.mfa/$1)"
+complete -F _mfa_tokens mfa mfa_token
+
+mfa () {
+    mfa_token "${1}" | pbcopy
+}
+
+mfa_token () {
+    oathtool --base32 --totp "$(cat "${HOME}/.mfa/${1}")"
 }
