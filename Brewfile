@@ -18,6 +18,7 @@ brew "bash"
 brew "bash-completion"
 brew "colordiff"
 brew "coreutils"
+brew "direnv"
 brew "ffmpeg"
 brew "findutils", args: ["with-default-names"]
 brew "git", args: ["with-curl", "with-openssl"]
