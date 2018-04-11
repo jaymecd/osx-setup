@@ -1,4 +1,8 @@
+MAKEFLAGS += --warn-undefined-variables --no-print-directory
 SHELL := bash
+.ONESHELL:
+.SHELLFLAGS := -eu -o pipefail -c
+.DEFAULT_GOAL := help
 
 HAS_BREW := $(shell command -v brew 2>/dev/null)
 HAS_MAS := $(shell command -v mas 2>/dev/null)
@@ -44,7 +48,7 @@ endif
 ## Setup system
 init:
 ifndef HAS_BREW
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	ruby -e "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 endif
 ifndef HAS_MAS
 	brew install mas
