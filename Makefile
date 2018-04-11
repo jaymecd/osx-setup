@@ -65,10 +65,13 @@ endif
 
 ## Install/update applications
 sync:
+	@ brew update
 	@ brew bundle -v
 	@ brew bundle cleanup
 	@ brew bundle dump --describe --global --force
 	@ echo "🍺  Configuration is dumped to $(HOME)/.Brewfile"
+	@ rsync -a files/shell/ ~/.local/shell/
+	@ rsync -a files/gnupg/ ~/.gnupg/
 
 ## Check for updates
 check:
