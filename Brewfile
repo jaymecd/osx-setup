@@ -43,6 +43,8 @@ brew "oath-toolkit"
 brew "packer"
 brew "php72", args: ["with-gmp", "with-pear", "with-phpdbg", "without-fpm"]
 brew "pinentry-mac"
+brew "python"
+brew "python@2"
 brew "rsync"
 brew "ruby"
 brew "shellcheck"
