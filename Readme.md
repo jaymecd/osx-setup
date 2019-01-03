@@ -52,7 +52,7 @@ $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/maste
 
 ### Install Mac App Store CLI
 
-⚠️  `mas signin` is disabled, please followhttps://github.com/mas-cli/mas/issues/164 for more information.
+⚠️  `mas signin` is disabled, please follow https://github.com/mas-cli/mas/issues/164 for more information.
 
 ```shell
 $ brew install mas
