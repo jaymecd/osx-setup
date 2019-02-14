@@ -1,3 +1,18 @@
+# path
+PATH="${BREW_PATH}/opt/gettext/bin:/usr/local/sbin:${PATH}"
+MANPATH="${BREW_PATH}/opt/gettext/share/man:${MANPATH}"
+
+for PACKAGE in coreutils gnu-tar gnu-sed gnu-time findutils gnu-which; do
+    PATH="${BREW_PATH}/opt/${PACKAGE}/libexec/gnubin:${PATH}"
+    MANPATH="${BREW_PATH}/opt/${PACKAGE}/libexec/gnuman:${MANPATH}"
+done
+
+unset PACKAGE
+
+export PATH
+export MANPATH
+
+# direnv
 export DIRENV_LOG_FORMAT=
 
 eval "$(direnv hook bash)"

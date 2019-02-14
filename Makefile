@@ -37,10 +37,10 @@ help:
 ## Run systems checks
 doctor:
 ifndef HAS_BREW
-	$(error Please run '$$ make deps' first)
+	$(error Please run '$$ make init' first)
 endif
 ifndef HAS_MAS
-	$(error Please run '$$ make deps' first)
+	$(error Please run '$$ make init' first)
 endif
 	@ brew doctor || true
 	@ mas account >/dev/null
@@ -55,6 +55,7 @@ ifndef HAS_MAS
 endif
 	@ ./mas-signin.sh
 
+	@ mkdir -p ~/.local/shell ~/.gnupg
 	@ rsync -a files/shell/ ~/.local/shell/
 	@ rsync -a files/gnupg/ ~/.gnupg/
 
