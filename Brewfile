@@ -6,6 +6,7 @@ tap "mapbox/cli"
 tap "pothosware/pothos"
 tap "tylerbrock/saw"
 tap "wallix/awless"
+tap "dkanejs/aws-session-manager-plugin"
 
 # is required for java-based brews, like ant
 cask "java"
@@ -17,6 +18,7 @@ brew "php"
 
 brew "awless"
 brew "awscli"
+brew "aws-session-manager-plugin"
 brew "azure-cli"
 brew "bash"
 brew "bash-completion"
@@ -104,5 +106,6 @@ cask "spotifree"
 cask "spotify"
 cask "tunnelblick"
 cask "visual-studio-code"
+cask "zoomus"
 
 mas "DrCleaner", id: 921458519
