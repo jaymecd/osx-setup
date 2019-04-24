@@ -70,7 +70,7 @@ brew "youtube-dl"
 brew "yq"
 
 cask "alfred"
-cask "android-platform-tools"
+#cask "android-platform-tools"
 cask "bitbar"
 cask "calibre"
 cask "docker"
