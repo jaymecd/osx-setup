@@ -17,3 +17,5 @@ unset PACKAGE PACKAGES_BIN PACKAGES_LIBEXEC
 
 export PATH
 export MANPATH
+
+test ! -f "${BREW_PATH}/etc/bash_completion" || source "${BREW_PATH}/etc/bash_completion"
