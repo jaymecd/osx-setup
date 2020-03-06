@@ -1,16 +1,19 @@
 BREW_PATH="$(brew --prefix)"
 
-for PACKAGE in gettext; do
+PACKAGES_BIN=( gettext )
+PACKAGES_LIBEXEC=( coreutils grep gnu-tar gnu-sed gnu-time findutils gnu-which )
+
+for PACKAGE in "${PACKAGES_BIN[@]}"; do
     PATH="${BREW_PATH}/opt/${PACKAGE}/bin:/usr/local/sbin:${PATH}"
     MANPATH="${BREW_PATH}/opt/${PACKAGE}/share/man:${MANPATH}"
 done
 
-for PACKAGE in coreutils grep gnu-tar gnu-sed gnu-time findutils gnu-which; do
+for PACKAGE in "${PACKAGES_LIBEXEC[@]}"; do
     PATH="${BREW_PATH}/opt/${PACKAGE}/libexec/gnubin:${PATH}"
     MANPATH="${BREW_PATH}/opt/${PACKAGE}/libexec/gnuman:${MANPATH}"
 done
 
-unset PACKAGE
+unset PACKAGE PACKAGES_BIN PACKAGES_LIBEXEC
 
 export PATH
 export MANPATH
