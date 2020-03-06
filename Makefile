@@ -1,7 +1,6 @@
 MAKEFLAGS += --warn-undefined-variables --no-print-directory
-SHELL := bash
+SHELL := sh -o pipefail -c
 .ONESHELL:
-.SHELLFLAGS := -eu -o pipefail -c
 .DEFAULT_GOAL := help
 
 HAS_BREW := $(shell command -v brew 2>/dev/null)
