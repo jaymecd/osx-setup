@@ -1,8 +1,6 @@
 [ -f "${HOME}/.bashrc" ] && source ${HOME}/.bashrc
 
-source "$(brew --prefix)/etc/bash_completion"
-
-for FILE in $(find "${HOME}/.local/shell" -type f); do
+for FILE in $(find "${HOME}/.local/shell" -type f | sort -u); do
   source "${FILE}"
 done
 
