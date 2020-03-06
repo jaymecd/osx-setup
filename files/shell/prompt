@@ -1,0 +1,98 @@
+#
+# PS prompts
+#
+
+function __ps_git() {
+    declare -f -F __git_ps1 &>/dev/null || return
+
+    declare utype
+
+    utype=$(git config user.type || :)
+    __git_ps1 " (${utype:+${utype::1} }%s)"
+}
+
+function __ps_aws() {
+    test -n "${AWS_PROFILE}" || return
+
+    declare region
+
+    region=$(echo "${AWS_DEFAULT_REGION:-}" | sed -e 's/north/n/' -e 's/east/e/' -e 's/south/s/' -e 's/west/w/' -e 's/central/c/' -e 's/-//g')
+    echo " (aws${region:+:${region}} ${AWS_PROFILE})"
+}
+
+function __ps1_prompt() {
+    declare -r status="$?"
+
+    declare ts2=$(date +'%s')
+    declare ts1="${_PS_TIMER_STARTED_:=$ts2}"
+    declare elapsed
+
+    elapsed=$(format_time $(( ts2 - ts1 )))
+    unset _PS_TIMER_STARTED_
+
+    declare -r x="\[\e[0m\]"
+    declare -r b="\[\e[0;30m\]"
+    declare -r r="\[\e[0;31m\]"
+    declare -r g="\[\e[0;32m\]"
+    declare -r gr="\[\e[1;30m\]"
+    declare -r y="\[\e[0;33m\]"
+    declare -r bl="\[\e[1;34m\]"
+    declare -r p="\[\e[0;35m\]"
+    declare -r c="\[\e[0;36m\]"
+    declare -r w="\[\e[0;37m\]"
+
+    if [ $(id -u) = 0 ]; then
+        PS1="${r}\u"
+    else
+        PS1="${g}\u"
+    fi
+
+    PS1+=" ${w}@ ${y}\h ${bl}\w${y}\$(__ps_git)${gr}\$(__ps_aws)${x}\n${c}[\t]"
+
+    if [ "${status}" -eq 0 ]; then
+        PS1+=" ${g}${status}"
+    else
+        PS1+=" ${r}${status}"
+    fi
+
+    PS1+=" ${c}${elapsed} ${w}\$${x} "
+
+    test -z "${_PS_PROMPT_COMMAND_}" || "${_PS_PROMPT_COMMAND_}"
+
+    return "${status}"
+}
+
+format_time() {
+    declare -r seconds="$1"
+    declare result
+
+    declare -r d=$(( seconds / 60 / 60 / 24 ))
+    declare -r h=$(( seconds / 60 / 60 % 24 ))
+    declare -r m=$(( seconds / 60 % 60 ))
+    declare -r s=$(( seconds % 60 ))
+
+    result="${s}s"
+
+    test $m -eq 0 || result="${m}m${result}"
+    test $h -eq 0 || result="${h}h${result}"
+    test $d -eq 0 || result="${d}d${result}"
+
+    echo "${result}"
+}
+
+declare _PS_TIMER_STARTED_
+declare _PS_PROMPT_COMMAND_="${PROMPT_COMMAND:-}"
+
+__ps_time_start() {
+    # do nothing if completing
+    test -z "${COMP_LINE}" || return
+
+    # # don't cause a preexec for $PROMPT_COMMAND
+    test "${BASH_COMMAND}" != "${PROMPT_COMMAND}" || return
+
+    _PS_TIMER_STARTED_=$(date +'%s')
+}
+
+trap '__ps_time_start' DEBUG
+
+PROMPT_COMMAND="__ps1_prompt"
