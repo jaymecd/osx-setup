@@ -1,37 +1,21 @@
-MAKEFLAGS += --warn-undefined-variables --no-print-directory
-SHELL := sh -o pipefail -c
-.ONESHELL:
+MAKEFLAGS += --warn-undefined-variables
+SHELL := bash -o pipefail -c
 .DEFAULT_GOAL := help
 
 HAS_BREW := $(shell command -v brew 2>/dev/null)
 HAS_MAS := $(shell command -v mas 2>/dev/null)
 
-# COLORS
-GREEN  := $(shell tput -Txterm setaf 2)
-YELLOW := $(shell tput -Txterm setaf 3)
-WHITE  := $(shell tput -Txterm setaf 7)
-RESET  := $(shell tput -Txterm sgr0)
-
-.PHONY: help
-.PHONY: doctor init
-.PHONY: sync info check clean
-
-TARGET_MAX_CHAR_NUM=10
 ## Display this help
 help:
-	@echo 'Usage:'
-	@echo '  ${YELLOW}make${RESET} ${GREEN}<target>${RESET}'
-	@echo ''
-	@echo 'Targets:'
-	@awk '/^[a-zA-Z\-\_0-9]+:/ { \
-		helpMessage = match(lastLine, /^## (.*)/); \
-		if (helpMessage) { \
-			helpCommand = substr($$1, 0, index($$1, ":")-1); \
-			helpMessage = substr(lastLine, RSTART + 3, RLENGTH); \
-			printf "  ${YELLOW}%-$(TARGET_MAX_CHAR_NUM)s${RESET} ${GREEN}%s${RESET}\n", helpCommand, helpMessage; \
-		} \
-	} \
-	{ lastLine = $$0 }' $(MAKEFILE_LIST) | sort
+	@ echo 'Usage: make <target>'
+	@ echo
+	@ echo 'Available targets are:'
+	@ awk '/^[[:alnum:]]+([\.\-_][[:alnum:]]*)*:/ \
+		{if (match(line, /^## (.*)/)) { \
+			printf "    %s^%s\n", substr($$1, 0, index($$1, ":")-1), substr(line, RSTART + 3, RLENGTH); \
+		}} { line = $$0 }' $(MAKEFILE_LIST) | sort | column -t -s^
+	@ echo
+.PHONY: help
 
 ## Run systems checks
 doctor:
@@ -43,6 +27,7 @@ ifndef HAS_MAS
 endif
 	@ brew doctor || true
 	@ mas account >/dev/null
+PHONY: doctor
 
 ## Setup system
 init:
@@ -60,9 +45,11 @@ endif
 	@ echo '# ----- osx-setup ----- #'
 	@ cat files/profile
 	@ echo '# ----- osx-setup ----- #'
+PHONY: init
 
 ## Same as make brew files
 sync: apps files
+PHONY: sync
 
 ## Install/update applications
 apps:
@@ -71,7 +58,7 @@ apps:
 	brew bundle cleanup
 	brew bundle dump --describe --global --force
 	@ echo "🍺  Configuration is dumped to $(HOME)/.Brewfile"
-
+PHONY: apps
 
 ## Sync files
 files:
@@ -79,10 +66,12 @@ files:
 	rsync -a files/shell/ ~/.local/shell/
 	rsync -a files/ssh/ ~/.ssh/
 	rsync -a files/gnupg/ ~/.gnupg/
+PHONY: files
 
 ## Check for updates
 check:
 	@ brew bundle check
+PHONY: check
 
 ## List installed apps
 info:
@@ -97,7 +86,9 @@ info:
 
 	@ echo "🍺  Installed MASes:"
 	@ brew bundle list --mas
+PHONY: info
 
 ## Remove unattended applications
 clean:
 	brew bundle cleanup --zap --force
+PHONY: clean
