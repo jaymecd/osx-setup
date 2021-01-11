@@ -27,7 +27,7 @@ ifndef HAS_MAS
 endif
 	@ brew doctor || true
 	@ mas account >/dev/null
-PHONY: doctor
+.PHONY: doctor
 
 ## Setup system
 init:
@@ -45,11 +45,11 @@ endif
 	@ echo '# ----- osx-setup ----- #'
 	@ cat files/profile
 	@ echo '# ----- osx-setup ----- #'
-PHONY: init
+.PHONY: init
 
 ## Same as make brew files
 sync: apps files
-PHONY: sync
+.PHONY: sync
 
 ## Install/update applications
 apps:
@@ -58,7 +58,7 @@ apps:
 	brew bundle cleanup
 	brew bundle dump --describe --global --force
 	@ echo "🍺  Configuration is dumped to $(HOME)/.Brewfile"
-PHONY: apps
+.PHONY: apps
 
 ## Sync files
 files:
@@ -66,12 +66,12 @@ files:
 	rsync -a files/shell/ ~/.local/shell/
 	rsync -a files/ssh/ ~/.ssh/
 	rsync -a files/gnupg/ ~/.gnupg/
-PHONY: files
+.PHONY: files
 
 ## Check for updates
 check:
 	@ brew bundle check
-PHONY: check
+.PHONY: check
 
 ## List installed apps
 info:
@@ -86,9 +86,9 @@ info:
 
 	@ echo "🍺  Installed MASes:"
 	@ brew bundle list --mas
-PHONY: info
+.PHONY: info
 
 ## Remove unattended applications
 clean:
 	brew bundle cleanup --zap --force
-PHONY: clean
+.PHONY: clean
