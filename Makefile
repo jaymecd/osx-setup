@@ -54,24 +54,31 @@ ifndef HAS_MAS
 endif
 	@ ./mas-signin.sh
 
-	@ mkdir -p ~/.local/shell ~/.gnupg
-	@ rsync -a files/shell/ ~/.local/shell/
-	@ rsync -a files/gnupg/ ~/.gnupg/
+	@ make files
 
 	@ echo 'Update "~/.profile" file with following content:'
 	@ echo '# ----- osx-setup ----- #'
 	@ cat files/profile
 	@ echo '# ----- osx-setup ----- #'
 
+## Same as make brew files
+sync: apps files
+
 ## Install/update applications
-sync:
-	@ brew update
-	@ brew bundle -v
-	@ brew bundle cleanup
-	@ brew bundle dump --describe --global --force
+apps:
+	brew update
+	brew bundle -v
+	brew bundle cleanup
+	brew bundle dump --describe --global --force
 	@ echo "🍺  Configuration is dumped to $(HOME)/.Brewfile"
-	@ rsync -a files/shell/ ~/.local/shell/
-	@ rsync -a files/gnupg/ ~/.gnupg/
+
+
+## Sync files
+files:
+	mkdir -p ~/.local/shell ~/.gnupg ~/.ssh
+	rsync -a files/shell/ ~/.local/shell/
+	rsync -a files/ssh/ ~/.ssh/
+	rsync -a files/gnupg/ ~/.gnupg/
 
 ## Check for updates
 check:
