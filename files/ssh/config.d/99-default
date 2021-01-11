@@ -1,0 +1,5 @@
+Host *
+    ForwardAgent no
+    ServerAliveInterval 20
+    ServerAliveCountMax 180
+    ConnectTimeout 3

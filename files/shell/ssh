@@ -1,0 +1,15 @@
+function ssh_preload_keys() {
+  local key
+
+  for key in $(ls ~/.ssh/*.pem); do
+    echo "* Loading: ${key##*/}"
+    ssh-add -K "${key}" 1>/dev/null
+  done
+}
+
+function ssh_compile_config() {
+  if [ -d ~/.ssh/config.d/ ]; then
+    echo -e "# THIS IS COMPILED VERSION, ANY MANUAL CHANGES WOULD BE LOST\n" > ~/.ssh/config
+    cat ~/.ssh/config.d/* >> ~/.ssh/config
+  fi
+}
