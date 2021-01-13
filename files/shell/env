@@ -1,4 +1,9 @@
+# @see https://support.apple.com/en-us/HT208050
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 BREW_PATH="$(brew --prefix)"
+
+export BREW_PATH
 
 PACKAGES_BIN=( gettext )
 PACKAGES_LIBEXEC=( coreutils grep gnu-tar gnu-sed gnu-time findutils gnu-which )
