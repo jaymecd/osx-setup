@@ -1,4 +1,7 @@
 Host *
+    UseKeychain yes
+    AddKeysToAgent yes
+
     ForwardAgent no
     ServerAliveInterval 20
     ServerAliveCountMax 180

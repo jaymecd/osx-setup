@@ -1,8 +1,7 @@
 function ssh_preload_keys() {
   local key
 
-  for key in $(ls ~/.ssh/*.pem); do
-    echo "* Loading: ${key##*/}"
+  for key in $(ls -1 ~/.ssh/*.pem); do
     ssh-add -K "${key}" 1>/dev/null
   done
 }
