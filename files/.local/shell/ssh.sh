@@ -1,12 +1,12 @@
-function ssh_preload_keys() {
+ssh_preload_keys() {
   local key
 
   for key in $(ls -1 ~/.ssh/*.pem); do
-    ssh-add -K "${key}" 1>/dev/null
+    ssh-add --apple-use-keychain "${key}" 1>/dev/null
   done
 }
 
-function ssh_compile_config() {
+ssh_compile_config() {
   if [ -d ~/.ssh/config.d/ ]; then
     echo -e "# THIS IS COMPILED VERSION, ANY MANUAL CHANGES WOULD BE LOST\n" > ~/.ssh/config
     cat ~/.ssh/config.d/* >> ~/.ssh/config

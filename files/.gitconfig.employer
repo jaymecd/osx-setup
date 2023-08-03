@@ -1,0 +1,7 @@
+[user]
+    email = username@company.com
+    type = corp
+
+# use host alias - $ git checkout alias:org/repo
+[url "git@git...:"]
+    insteadOf = alias:

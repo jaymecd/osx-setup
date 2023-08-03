@@ -1,0 +1,96 @@
+[user]
+    name = Nikolai Zujev
+    email = nikolai.zujev@gmail.com
+    signingkey = EEBCE414F970A898!
+
+[init]
+    defaultBranch = main
+
+[core]
+    editor = vi
+    pager = delta
+    autocrlf = input
+    ignorecase = false
+    whitespace = trailing-space,space-before-tab,indent-with-non-tab
+    excludesfile = ~/.gitignore
+    preloadindex = true
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    line-numbers = true
+    whitespace-error-style = 22 reverse
+    syntax-theme = DarkNeon
+    zero-style = dim syntax
+
+    file-style = yellow
+    file-decoration-style = yellow box
+    hunk-header-style = dim syntax
+    hunk-header-decoration-style = none
+
+[apply]
+    whitespace = nowarn
+
+[diff]
+#    noPrefix = true
+    colorMoved = default
+
+[commit]
+    gpgSign = true
+
+[tag]
+    forceSignAnnotated = true
+    sort = -version:refname
+
+[push]
+    default = current
+
+[color]
+    ui = true
+
+[alias]
+    up = !(git add . && git stash && git pull --rebase >&2) | grep -v \"No local changes to save\" && git stash pop
+    in = !git remote update -p && git log ..@{u} --oneline
+    out = log @{u}.. --oneline
+    addremove = !git add . && git ls-files --deleted | xargs --no-run-if-empty git rm
+    unstage = reset HEAD --
+    backup = !file=../`git describe`.tar && echo \"Creating `readlink -f $file`\" && tar cf $file .
+    bname = !git symbolic-ref -q HEAD 2>/dev/null | sed -e \"s|^refs/heads/||\"
+    tname = !git describe --abbrev=0 --exact-match 2>/dev/null
+    ds = diff --cached
+    du = diff
+    st = status -s
+    ci = commit
+    co = checkout
+    br = branch
+    bra = branch -a
+    pick = cherry-pick
+    pur = pull --rebase=merges --prune
+    bl = blame -b -w
+    amend = commit --amend
+    fixup = commit --fixup
+    addu = !git add $(git ls-files -o --exclude-standard)
+    hist = log --graph --pretty=format:\"%C(cyan)[%h]%C(reset) %s%C(red)%d%C(reset) %C(yellow)[%cr (%cs)]%C(reset) %C(cyan)<%an>%C(reset) %C(magenta)gpg/%G?%C(reset)\"
+    lg = log --graph --all --abbrev-commit --topo-order --pretty=format:\"%C(cyan)[%h]%C(reset) %s%C(red)%d%C(reset) %C(yellow)[%cr (%cs)]%C(reset) %C(cyan)<%an>%C(reset) %C(magenta)gpg/%G?%C(reset)\"
+    who = shortlog -nes
+    cdiff = !git diff | colordiff | more -r
+
+[rebase]
+    autoSquash = true
+
+[rerere]
+    enable = true
+
+[gc]
+    auto = 256
+
+;[credential "https://git-codecommit.eu-west-1.amazonaws.com"]
+;    helper = !aws codecommit credential-helper $@
+;    UseHttpPath = true
+
+[include]
+    path = ~/.gitconfig.employer
+
+[includeIf "gitdir:~/ws/private/"]
+    path = ~/.gitconfig.private

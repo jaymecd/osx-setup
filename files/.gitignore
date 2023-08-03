@@ -1,0 +1,31 @@
+# allow gitkeep
+!*.gitkeep
+
+# OS temp files 
+Thumbs.db
+.DS_Store
+*.swp
+*.out
+*.bak
+*~
+
+.envrc
+
+# IDE files 
+nbproject/
+.vagrant/
+.settings/
+.project
+.buildpath
+.idea/
+.venv/
+.venv
+.direnv/
+.vscode/
+.devcontainer/
+*.code-workspace
+variables.json
+manifest.json
+
+# see https://localheinz.com/blog/2019/10/25/project-notes/
+.notes/

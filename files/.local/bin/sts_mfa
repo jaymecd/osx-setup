@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+set -o monitor
+set -o posix
+
+DEBUG=$((${DEBUG:-}))
+
+((! DEBUG)) || set -o xtrace
+
+REQUIRED_BINARIES=(aws)
+
+unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+
+export AWS_PROFILE="${1:-}"
+
+: ${STS_PROFILE:="sts-${AWS_PROFILE}"}
+: ${DURATION:=32400}
+: ${FORCE:=0}
+
+main() {
+    _global_guard
+
+    local mfa_serial mfa_token kst ts_now ts_sts ts_diff
+
+    ts_now="$(date +%s)"
+    ts_sts="$(aws configure get "profile.${STS_PROFILE}.session_token_ttl" || echo 0)"
+    ts_diff=$(( ts_sts - ts_now ))
+
+    if [ "${ts_diff}" -gt 300 ] && ((! FORCE)); then
+        printf 'AWS_PROFILE "%s" still has valid MFA-aware token of "%s" profile.\n' "${STS_PROFILE}" "${AWS_PROFILE}"
+        printf "\tToken expires in %s at %s\n" "$(_convert_secs ${ts_diff})" "$(date +"%FT%TZ" --utc --date "@${ts_sts}")"
+        printf "\tRun as: AWS_PROFILE=%s aws sts get-caller-identity\n" "${STS_PROFILE}"
+        return 0
+    fi
+
+    mfa_serial="$(_extract_mfa_serial)"
+    test -n "${mfa_serial}" || _error "no mfa_serial device discovered"
+
+    read -r -p "MFA token: " mfa_token
+    test -n "${mfa_token}" || _error "token is empty or not provided"
+
+    kst=( $(aws sts get-session-token \
+        --duration-seconds "${DURATION}" \
+        --serial-number "${mfa_serial}" \
+        --token-code "${mfa_token}" \
+        --query '[Credentials.AccessKeyId,Credentials.SecretAccessKey,Credentials.SessionToken,Credentials.Expiration]' \
+        --output text) )
+
+    ts_now="$(date +%s)"
+    ts_sts="$(date +%s --date "${kst[3]}")"
+    ts_diff=$(( ts_sts - ts_now ))
+
+    aws configure set "profile.${STS_PROFILE}.aws_access_key_id" "${kst[0]}"
+    aws configure set "profile.${STS_PROFILE}.aws_secret_access_key" "${kst[1]}"
+    aws configure set "profile.${STS_PROFILE}.aws_session_token" "${kst[2]}"
+    aws configure set "profile.${STS_PROFILE}.session_token_ttl" "${ts_sts}"
+
+    printf 'AWS_PROFILE "%s" is updated with MFA-aware token of "%s" profile.\n' "${STS_PROFILE}" "${AWS_PROFILE}"
+    printf "\tToken expires in %s at %s\n" "$(_convert_secs ${ts_diff})" "${kst[3]}"
+    printf "\tRun as: AWS_PROFILE=%s aws sts get-caller-identity\n" "${STS_PROFILE}"
+}
+
+_global_guard() {
+    local binary
+
+    for binary in "${REQUIRED_BINARIES[@]}"; do
+        hash -r "${binary}" 2>/dev/null || _error "command '${binary}' not found"
+    done
+
+    test -n "${AWS_PROFILE}" || _error "AWS_PROFILE= is empty"
+    test -n "${STS_PROFILE}" || _error "STS_PROFILE= is empty"
+    test -n "${DURATION}" || _error "DURATION= is empty"
+}
+
+_extract_mfa_serial() {
+    local mfa_serial
+
+    mfa_serial="$(aws configure get mfa_serial ||:)"
+
+    if test -z "${mfa_serial}"; then
+        mfa_serial="$(aws iam list-mfa-devices --query "MFADevices[0].[SerialNumber]" --output text 2>/dev/null ||:)"
+    fi
+
+    if test -z "${mfa_serial}"; then
+        mfa_serial="$(aws sts get-caller-identity --query '[Arn]' --output text 2>/dev/null | sed -e 's#:user/#:mfa/#' ||:)"
+    fi
+
+    echo "${mfa_serial}"
+}
+
+_convert_secs() {
+    printf '%02dh:%02dm:%02ds\n' $(( $1 / 3600 )) $(( $1 % 3600 / 60 )) $(( $1 % 60 ))
+}
+
+_usage() {
+    printf 'Usage: %s [<token>]\n' "$(basename "${BASH_SOURCE[0]}")"
+    printf '\n'
+    printf 'Obtain STS temporary MFA-aware credentials and store then into .\n'
+    printf '\n'
+    printf '  Environment variables:\n'
+    printf '    STS_PROFILE - AWS STS profile to store temporary credentials\n'
+    printf '    AWS_PROFILE - AWS origin profile name (default: default)\n'
+    printf '    DURATION    - duration of the session token (default: 32400 or 9 hours)\n'
+    printf '    DEBUG       - run script in verbose mode\n'
+    exit 1
+}
+
+_error () {
+    printf 'Error: %s\n' "$@" >&2
+    printf 'Abort!\n'
+    exit 1
+}
+
+_fatality() {
+    { local code="$?"; set +o xtrace; } 2>/dev/null
+
+    printf 'Runtime error (%d) in %s:%d\n' "${code}" "${BASH_SOURCE[1]}" "${BASH_LINENO[0]}"
+    exit "${code}"
+}
+
+trap '_fatality' ERR
+
+set +o errexit
+set -o errtrace
+
+if [ "${1:-}" == "-h" ] || [ "${1:-}" == "--help" ]; then
+    _usage
+fi
+
+main "$@"
