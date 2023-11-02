@@ -32,7 +32,7 @@ endif
 ## Setup system
 init:
 ifndef HAS_BREW
-	ruby -e "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 endif
 ifndef HAS_MAS
 	brew install mas
@@ -70,22 +70,22 @@ files:
 
 ## Check for updates
 check:
-	@ brew bundle check
+	brew bundle check --verbose
 .PHONY: check
 
 ## List installed apps
 info:
 	@ echo "🍺  Installed Taps:"
-	@ brew bundle list --taps
+	brew bundle list --taps
 
 	@ echo "🍺  Installed Brews:"
-	@ brew bundle list --brews
+	brew bundle list --brews
 
 	@ echo "🍺  Installed Casks:"
-	@ brew bundle list --casks
+	brew bundle list --casks
 
 	@ echo "🍺  Installed MASes:"
-	@ brew bundle list --mas
+	brew bundle list --mas
 .PHONY: info
 
 ## Remove unattended applications
