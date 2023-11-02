@@ -128,6 +128,10 @@ defaults write com.apple.Safari \
 
 # === Text editing ===
 
+# Sonoma keyboard popup
+# @see https://stackoverflow.com/questions/36313216/why-is-testing-to-see-if-a-command-succeeded-or-not-an-anti-pattern
+sudo defaults write /Library/Preferences/FeatureFlags/Domain/UIKit.plist redesigned_text_cursor -dict-add Enabled -bool NO
+
 # Disable smart quotes:
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 
