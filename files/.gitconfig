@@ -50,6 +50,7 @@
     ui = true
 
 [alias]
+    root = rev-parse --show-toplevel
     up = !(git add . && git stash && git pull --rebase >&2) | grep -v \"No local changes to save\" && git stash pop
     in = !git remote update -p && git log ..@{u} --oneline
     out = log @{u}.. --oneline
@@ -75,6 +76,8 @@
     lg = log --graph --all --abbrev-commit --topo-order --pretty=format:\"%C(cyan)[%h]%C(reset) %s%C(red)%d%C(reset) %C(yellow)[%cr (%cs)]%C(reset) %C(cyan)<%an>%C(reset) %C(magenta)gpg/%G?%C(reset)\"
     who = shortlog -nes
     cdiff = !git diff | colordiff | more -r
+    ignored = !find . -not -name .git | git check-ignore --stdin
+    emptydirs = !find . -name .git -prune -o -type d -empty -print
 
 [rebase]
     autoSquash = true
@@ -89,7 +92,7 @@
 ;    helper = !aws codecommit credential-helper $@
 ;    UseHttpPath = true
 
-[include]
+[includeIf "gitdir:~/ws/work/"]
     path = ~/.gitconfig.employer
 
 [includeIf "gitdir:~/ws/private/"]

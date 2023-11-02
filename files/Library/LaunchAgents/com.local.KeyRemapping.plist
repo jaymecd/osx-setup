@@ -6,6 +6,7 @@
     <string>com.local.KeyRemapping</string>
     <key>ProgramArguments</key>
     <array>
+      <!-- remap fn(F4)/fn(F5) to control keyboard light on M1/M2 -->
       <string>/usr/bin/hidutil</string>
       <string>property</string>
       <string>--set</string>

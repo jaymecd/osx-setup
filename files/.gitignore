@@ -1,17 +1,19 @@
 # allow gitkeep
 !*.gitkeep
 
-# OS temp files 
+# OS temp files
 Thumbs.db
 .DS_Store
 *.swp
 *.out
 *.bak
+*.svg.bkp
+*.svg.dtmp
 *~
 
 .envrc
 
-# IDE files 
+# IDE files
 nbproject/
 .vagrant/
 .settings/
@@ -20,12 +22,14 @@ nbproject/
 .idea/
 .venv/
 .venv
+node_modules/
+node_modules
 .direnv/
 .vscode/
 .devcontainer/
 *.code-workspace
-variables.json
-manifest.json
+# variables.json
+# manifest.json
 
 # see https://localheinz.com/blog/2019/10/25/project-notes/
 .notes/
